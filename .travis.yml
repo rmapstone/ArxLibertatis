@@ -20,7 +20,7 @@ addons:
     - qt-sdk
     - libglm-dev
     - libcppunit-dev
-script: mkdir build && cd build && cmake --version && cmake .. -DICON_TYPE=none -DSTRICT_USE=1 -DBUILD_ALL=1 && make -j1 && make check
+script: mkdir build && cd build && cmake --version && cmake .. -DICON_TYPE=none -DSTRICT_USE=1 -DBUILD_ALL=1 && VERBOSE=1 make -j1 && VERBOSE=1 make check
 branches:
   only:
     - master
