@@ -19,7 +19,7 @@ include_directories(
 )
 
 add_executable(arxtest
-	testMain.cpp
+	TestMain.cpp
 	
 	../src/graphics/Math.cpp
 	../src/graphics/Color.h
@@ -29,20 +29,12 @@ add_executable(arxtest
 	
 	graphics/ColorTest.cpp
 	
-# TODO the logger should not be required for using the ini reader
-#	../src/platform/Platform.h
-#	../src/platform/Platform.cpp
-#	../src/platform/Lock.h
-#	../src/platform/Lock.cpp
-#	../src/platform/Environment.h
-#	../src/platform/Environment.cpp
-#	../src/io/log/LogBackend.h
-#	../src/io/log/LogBackend.cpp
-#	../src/io/log/ConsoleLogger.h
-#	../src/io/log/ConsoleLogger.cpp
-#	../src/io/log/Logger.h
-#	../src/io/log/Logger.cpp
-#	../src/io/IniReader.cpp
+	../src/io/fs/FilePath.cpp
+	io/fs/FilePathTest.cpp
+	
+	../src/io/resource/ResourcePath.cpp
+	io/resource/ResourcePathTest.cpp
+	
 	../src/io/IniSection.cpp
 	io/IniTest.h
 	io/IniTest.cpp

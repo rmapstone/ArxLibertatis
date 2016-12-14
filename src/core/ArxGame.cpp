@@ -52,8 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/foreach.hpp>
 
-#include <glm/gtx/norm.hpp>
-
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -639,19 +637,19 @@ static void loadLevel(u32 lvl) {
 		}
 	}
 }
-ARX_PROGRAM_OPTION("loadlevel", "", "Load a specific level", &loadLevel, "LEVELID");
+ARX_PROGRAM_OPTION_ARG("loadlevel", "", "Load a specific level", &loadLevel, "LEVELID")
 
 extern SavegameHandle LOADQUEST_SLOT;
 static void loadSlot(u32 saveSlot) {
 	LOADQUEST_SLOT = SavegameHandle(saveSlot);
 	GameFlow::setTransition(GameFlow::InGame);
 }
-ARX_PROGRAM_OPTION("loadslot", "", "Load a specific savegame slot", &loadSlot, "SAVESLOT");
+ARX_PROGRAM_OPTION_ARG("loadslot", "", "Load a specific savegame slot", &loadSlot, "SAVESLOT")
 
 static void skipLogo() {
 	loadLevel(LEVEL10);
 }
-ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo);
+ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo)
 
 static bool HandleGameFlowTransitions() {
 	
@@ -1380,7 +1378,7 @@ void ArxGame::updateFirstPersonCamera() {
 			vect.x = subj.orgTrans.pos.x - player.pos.x;
 			vect.y = 0;
 			vect.z = subj.orgTrans.pos.z - player.pos.z;
-			float len = ffsqrt(glm::length2(vect));
+			float len = ffsqrt(arx::length2(vect));
 			
 			if(len > 46.f) {
 				float div = 46.f / len;
@@ -1428,6 +1426,8 @@ void ArxGame::speechControlledCinematic() {
 		if(rtime >= 0.f && rtime <= 1.f && io) {
 			switch(acs.type) {
 			case ARX_CINE_SPEECH_KEEP: {
+				arx_assert(isallfinite(acs.pos1));
+				
 				subj.orgTrans.pos = acs.pos1;
 				subj.angle.setPitch(acs.pos2.x);
 				subj.angle.setYaw(acs.pos2.y);
@@ -1436,6 +1436,8 @@ void ArxGame::speechControlledCinematic() {
 				break;
 									   }
 			case ARX_CINE_SPEECH_ZOOM: {
+				arx_assert(isallfinite(acs.pos1));
+				
 				//need to compute current values
 				float alpha = acs.startangle.getPitch() * itime + acs.endangle.getPitch() * rtime;
 				float beta = acs.startangle.getYaw() * itime + acs.endangle.getYaw() * rtime;
@@ -1457,6 +1459,9 @@ void ArxGame::speechControlledCinematic() {
 			case ARX_CINE_SPEECH_SIDE_LEFT:
 			case ARX_CINE_SPEECH_SIDE: {
 				if(ValidIONum(acs.ionum)) {
+					arx_assert(isallfinite(acs.pos1));
+					arx_assert(isallfinite(acs.pos2));
+					
 					const Vec3f & from = acs.pos1;
 					const Vec3f & to = acs.pos2;
 
@@ -1494,6 +1499,9 @@ void ArxGame::speechControlledCinematic() {
 			case ARX_CINE_SPEECH_CCCTALKER_L: {
 				//need to compute current values
 				if(ValidIONum(acs.ionum)) {
+					arx_assert(isallfinite(acs.pos1));
+					arx_assert(isallfinite(acs.pos2));
+					
 					Vec3f targetpos;
 					if(acs.type == ARX_CINE_SPEECH_CCCLISTENER_L
 						 || acs.type == ARX_CINE_SPEECH_CCCLISTENER_R) {
@@ -2272,7 +2280,7 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	
 	GRenderer = &renderer;
 	
-	arx_assert(renderer.GetTextureStageCount() >= 3, "not enough texture units");
+	arx_assert_msg(renderer.GetTextureStageCount() >= 3, "not enough texture units");
 	arx_assert(m_MainWindow);
 	
 	renderer.Clear(Renderer::ColorBuffer);

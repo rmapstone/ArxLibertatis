@@ -50,7 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/euler_angles.hpp>
 
 #include "graphics/GraphicsTypes.h"
 
@@ -580,9 +579,9 @@ glm::mat4 toRotationMatrix(const Anglef & angle) {
 	float pitch = glm::radians(angle.getPitch());
 	float yaw = glm::radians(angle.getYaw());
 	float roll = glm::radians(angle.getRoll());
-	glm::mat4 rotateX = glm::eulerAngleX(pitch);
-	glm::mat4 rotateY = glm::eulerAngleY(yaw);
-	glm::mat4 rotateZ = glm::eulerAngleZ(-roll);
+	glm::mat4 rotateX = arx::eulerAngleX(pitch);
+	glm::mat4 rotateY = arx::eulerAngleY(yaw);
+	glm::mat4 rotateZ = arx::eulerAngleZ(-roll);
 	return rotateZ * rotateX * rotateY;
 }
 
@@ -618,11 +617,11 @@ std::pair<Vec3f, Vec3f> angleToFrontUpVec(const Anglef & angle) {
 	Vec3f front = angleToVector(angle);
 	Vec3f up = angleToVector(angle + Anglef(90.f, 0, 0));
 	
-	arx_assert(glm::abs(glm::dot(front, up)) < 5.f * std::numeric_limits<float>::epsilon(),
-	           "front=(%f,%f,%f) and up=(%f,%f,%f) should be orthogonal; dot=%1f*epsilon",
-	           double(front.x), double(front.y), double(front.z),
-	           double(up.x), double(up.y), double(up.z),
-	           double(glm::dot(front, up) / std::numeric_limits<float>::epsilon()));
+	arx_assert_msg(glm::abs(glm::dot(front, up)) < 5.f * std::numeric_limits<float>::epsilon(),
+	               "front=(%f,%f,%f) and up=(%f,%f,%f) should be orthogonal; dot=%1f*epsilon",
+	               double(front.x), double(front.y), double(front.z),
+	               double(up.x), double(up.y), double(up.z),
+	               double(glm::dot(front, up) / std::numeric_limits<float>::epsilon()));
 	
 	return std::make_pair(front, up);
 }

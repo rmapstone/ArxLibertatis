@@ -19,11 +19,10 @@
 
 #include "game/Camera.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
-
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
 
 void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	float pitch = glm::radians(angle.getPitch());
@@ -161,7 +160,7 @@ static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * ca
 
 void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	cam->orgTrans.updateFromAngle(cam->angle);
-	cam->orgTrans.mod = Vec2f(cam->center + cam->clip.origin.toVec2());
+	cam->orgTrans.mod = Vec2f(cam->center + cam->clip.topLeft());
 }
 
 void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
